@@ -2,6 +2,8 @@
 
 Циферблат для Zepp OS (Amazfit), предназначенный для туристов и альпинистов. За основу взят встроенный циферблат *Refined Chart* от Zepp Health.
 
+<img width="200" height="200" alt="anim" src="https://github.com/user-attachments/assets/80a786a7-b9fc-4c38-a651-b610bdff3bdb" />
+
 ## Совместимость
 - **Устройства:** Amazfit T-Rex 3 (480x480) и другие устройства Zepp OS с аналогичным разрешением.
 - **Версия API:** 3.6 и выше.
