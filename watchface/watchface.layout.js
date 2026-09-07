@@ -59,31 +59,31 @@ export default {
         empty: {
             x: 194,
             y: 429,
-            src: 'battery_0.png', 
+            src: 'battery_0.png',
         },
         empty_eco: {
             x: 194,
             y: 429,
-            src: 'battery_eco_0.png', 
+            src: 'battery_eco_0.png',
         },
         level: {
             x: 194,
             y: 429,
-            image_array: ["battery_1.png","battery_2.png","battery_3.png","battery_4.png","battery_5.png","battery_6.png","battery_7.png","battery_8.png","battery_9.png","battery_10.png"],
+            image_array: ["battery_1.png", "battery_2.png", "battery_3.png", "battery_4.png", "battery_5.png", "battery_6.png", "battery_7.png", "battery_8.png", "battery_9.png", "battery_10.png"],
             image_length: 10,
             type: hmUI.data_type.BATTERY,
         },
         level_eco: {
             x: 194,
             y: 429,
-            image_array: ["battery_eco_1.png","battery_eco_2.png","battery_eco_3.png","battery_eco_4.png","battery_eco_5.png","battery_eco_6.png","battery_eco_7.png","battery_eco_8.png","battery_eco_9.png","battery_eco_10.png"],
+            image_array: ["battery_eco_1.png", "battery_eco_2.png", "battery_eco_3.png", "battery_eco_4.png", "battery_eco_5.png", "battery_eco_6.png", "battery_eco_7.png", "battery_eco_8.png", "battery_eco_9.png", "battery_eco_10.png"],
             image_length: 10,
             type: hmUI.data_type.BATTERY,
         },
         percent: {
             x: 232,
             y: 434,
-            font_array: ["data_0.png","data_1.png","data_2.png","data_3.png","data_4.png","data_5.png","data_6.png","data_7.png","data_8.png","data_9.png"],
+            font_array: ["data_0.png", "data_1.png", "data_2.png", "data_3.png", "data_4.png", "data_5.png", "data_6.png", "data_7.png", "data_8.png", "data_9.png"],
             padding: false,
             h_space: 0,
             unit_sc: 'data_b.png',
@@ -99,7 +99,7 @@ export default {
         moon: {
             x: 380,
             y: 192,
-            image_array: ["moon_1.png","moon_2.png","moon_3.png","moon_4.png","moon_5.png","moon_6.png","moon_7.png","moon_8.png","moon_9.png","moon_10.png","moon_11.png","moon_12.png","moon_13.png","moon_14.png","moon_15.png","moon_16.png","moon_17.png","moon_18.png","moon_19.png","moon_20.png","moon_21.png","moon_22.png","moon_23.png","moon_24.png","moon_25.png","moon_26.png","moon_27.png","moon_28.png","moon_29.png","moon_30.png"],
+            image_array: ["moon_1.png", "moon_2.png", "moon_3.png", "moon_4.png", "moon_5.png", "moon_6.png", "moon_7.png", "moon_8.png", "moon_9.png", "moon_10.png", "moon_11.png", "moon_12.png", "moon_13.png", "moon_14.png", "moon_15.png", "moon_16.png", "moon_17.png", "moon_18.png", "moon_19.png", "moon_20.png", "moon_21.png", "moon_22.png", "moon_23.png", "moon_24.png", "moon_25.png", "moon_26.png", "moon_27.png", "moon_28.png", "moon_29.png", "moon_30.png"],
             image_length: 30,
             type: hmUI.data_type.MOON,
         },
@@ -116,7 +116,7 @@ export default {
         sun_rise: {
             x: 295,
             y: 259,
-            font_array: ["sun_0.png","sun_1.png","sun_2.png","sun_3.png","sun_4.png","sun_5.png","sun_6.png","sun_7.png","sun_8.png","sun_9.png"],
+            font_array: ["sun_0.png", "sun_1.png", "sun_2.png", "sun_3.png", "sun_4.png", "sun_5.png", "sun_6.png", "sun_7.png", "sun_8.png", "sun_9.png"],
             padding: false,
             h_space: 1,
             invalid_image: 'sun_null.png',
@@ -127,7 +127,7 @@ export default {
         sun_set: {
             x: 400,
             y: 259,
-            font_array: ["sun_0.png","sun_1.png","sun_2.png","sun_3.png","sun_4.png","sun_5.png","sun_6.png","sun_7.png","sun_8.png","sun_9.png"],
+            font_array: ["sun_0.png", "sun_1.png", "sun_2.png", "sun_3.png", "sun_4.png", "sun_5.png", "sun_6.png", "sun_7.png", "sun_8.png", "sun_9.png"],
             padding: false,
             h_space: 1,
             invalid_image: 'sun_null.png',
@@ -138,7 +138,7 @@ export default {
         moon_rise: {
             x: 295,
             y: 259,
-            font_array: ["sun_0.png","sun_1.png","sun_2.png","sun_3.png","sun_4.png","sun_5.png","sun_6.png","sun_7.png","sun_8.png","sun_9.png"],
+            font_array: ["sun_0.png", "sun_1.png", "sun_2.png", "sun_3.png", "sun_4.png", "sun_5.png", "sun_6.png", "sun_7.png", "sun_8.png", "sun_9.png"],
             padding: false,
             h_space: 1,
             invalid_image: 'sun_null.png',
@@ -149,7 +149,7 @@ export default {
         moon_set: {
             x: 400,
             y: 259,
-            font_array: ["sun_0.png","sun_1.png","sun_2.png","sun_3.png","sun_4.png","sun_5.png","sun_6.png","sun_7.png","sun_8.png","sun_9.png"],
+            font_array: ["sun_0.png", "sun_1.png", "sun_2.png", "sun_3.png", "sun_4.png", "sun_5.png", "sun_6.png", "sun_7.png", "sun_8.png", "sun_9.png"],
             padding: false,
             h_space: 1,
             invalid_image: 'sun_null.png',
@@ -389,7 +389,7 @@ export default {
         level_eco: {
             x: 122,
             y: 261,
-            image_array: ["hr_1.png","hr_2.png","hr_3.png","hr_4.png","hr_5.png","hr_6.png"],
+            image_array: ["hr_1.png", "hr_2.png", "hr_3.png", "hr_4.png", "hr_5.png", "hr_6.png"],
             image_length: 6,
             type: hmUI.data_type.HEART,
         },
@@ -400,7 +400,7 @@ export default {
         scale: {
             x: 118,
             y: 413,
-            src: 'step_0.png',      
+            src: 'step_0.png',
         },
         icon: {
             x: 111,
@@ -417,7 +417,7 @@ export default {
             y: 413,
             w: 246,
             h: 13,
-            image_array: ["step_1.png","step_2.png","step_3.png","step_4.png","step_5.png","step_6.png","step_7.png","step_8.png","step_9.png","step_10.png","step_11.png","step_12.png","step_13.png","step_14.png","step_15.png","step_16.png","step_17.png","step_18.png","step_19.png","step_20.png","step_21.png"],
+            image_array: ["step_1.png", "step_2.png", "step_3.png", "step_4.png", "step_5.png", "step_6.png", "step_7.png", "step_8.png", "step_9.png", "step_10.png", "step_11.png", "step_12.png", "step_13.png", "step_14.png", "step_15.png", "step_16.png", "step_17.png", "step_18.png", "step_19.png", "step_20.png", "step_21.png"],
             image_length: 21,
             type: hmUI.data_type.STEP,
         },
@@ -426,14 +426,14 @@ export default {
             y: 413,
             w: 246,
             h: 13,
-            image_array: ["calorie_1.png","calorie_2.png","calorie_3.png","calorie_4.png","calorie_5.png","calorie_6.png","calorie_7.png","calorie_8.png","calorie_9.png","calorie_10.png","calorie_11.png","calorie_12.png","calorie_13.png","calorie_14.png","calorie_15.png","calorie_16.png","calorie_17.png","calorie_18.png","calorie_19.png","calorie_20.png","calorie_21.png"],
+            image_array: ["calorie_1.png", "calorie_2.png", "calorie_3.png", "calorie_4.png", "calorie_5.png", "calorie_6.png", "calorie_7.png", "calorie_8.png", "calorie_9.png", "calorie_10.png", "calorie_11.png", "calorie_12.png", "calorie_13.png", "calorie_14.png", "calorie_15.png", "calorie_16.png", "calorie_17.png", "calorie_18.png", "calorie_19.png", "calorie_20.png", "calorie_21.png"],
             image_length: 21,
             type: hmUI.data_type.CAL,
         },
         step: {
             x: 147,
             y: 382,
-            font_array: ["data_0.png","data_1.png","data_2.png","data_3.png","data_4.png","data_5.png","data_6.png","data_7.png","data_8.png","data_9.png"],
+            font_array: ["data_0.png", "data_1.png", "data_2.png", "data_3.png", "data_4.png", "data_5.png", "data_6.png", "data_7.png", "data_8.png", "data_9.png"],
             padding: false,
             h_space: 0,
             align_h: hmUI.align.LEFT,
@@ -442,7 +442,7 @@ export default {
         cal: {
             x: 147,
             y: 382,
-            font_array: ["data_0.png","data_1.png","data_2.png","data_3.png","data_4.png","data_5.png","data_6.png","data_7.png","data_8.png","data_9.png"],
+            font_array: ["data_0.png", "data_1.png", "data_2.png", "data_3.png", "data_4.png", "data_5.png", "data_6.png", "data_7.png", "data_8.png", "data_9.png"],
             padding: false,
             h_space: 0,
             align_h: hmUI.align.LEFT,
@@ -456,7 +456,7 @@ export default {
         km: {
             x: 271,
             y: 382,
-            font_array: ["data_0.png","data_1.png","data_2.png","data_3.png","data_4.png","data_5.png","data_6.png","data_7.png","data_8.png","data_9.png"],
+            font_array: ["data_0.png", "data_1.png", "data_2.png", "data_3.png", "data_4.png", "data_5.png", "data_6.png", "data_7.png", "data_8.png", "data_9.png"],
             padding: false,
             h_space: 0,
             unit_sc: 'data_km.png',
@@ -469,7 +469,7 @@ export default {
         m: {
             x: 274,
             y: 382,
-            font_array: ["data_0.png","data_1.png","data_2.png","data_3.png","data_4.png","data_5.png","data_6.png","data_7.png","data_8.png","data_9.png"],
+            font_array: ["data_0.png", "data_1.png", "data_2.png", "data_3.png", "data_4.png", "data_5.png", "data_6.png", "data_7.png", "data_8.png", "data_9.png"],
             padding: false,
             h_space: 0,
             unit_sc: 'data_m.png',
@@ -486,14 +486,14 @@ export default {
         level: {
             x: 288,
             y: 33,
-            image_array: ["weather_0.png","weather_1.png","weather_2.png","weather_3.png","weather_4.png","weather_5.png","weather_6.png","weather_7.png","weather_8.png","weather_9.png","weather_10.png","weather_11.png","weather_12.png","weather_13.png","weather_14.png","weather_15.png","weather_16.png","weather_17.png","weather_18.png","weather_19.png","weather_20.png","weather_21.png","weather_22.png","weather_23.png","weather_24.png","weather_25.png","weather_26.png","weather_27.png","weather_28.png"],
+            image_array: ["weather_0.png", "weather_1.png", "weather_2.png", "weather_3.png", "weather_4.png", "weather_5.png", "weather_6.png", "weather_7.png", "weather_8.png", "weather_9.png", "weather_10.png", "weather_11.png", "weather_12.png", "weather_13.png", "weather_14.png", "weather_15.png", "weather_16.png", "weather_17.png", "weather_18.png", "weather_19.png", "weather_20.png", "weather_21.png", "weather_22.png", "weather_23.png", "weather_24.png", "weather_25.png", "weather_26.png", "weather_27.png", "weather_28.png"],
             image_length: 29,
             type: hmUI.data_type.WEATHER_CURRENT,
         },
         low: {
             x: 256,
             y: 88,
-            font_array: ["tem_0.png","tem_1.png","tem_2.png","tem_3.png","tem_4.png","tem_5.png","tem_6.png","tem_7.png","tem_8.png","tem_9.png"],
+            font_array: ["tem_0.png", "tem_1.png", "tem_2.png", "tem_3.png", "tem_4.png", "tem_5.png", "tem_6.png", "tem_7.png", "tem_8.png", "tem_9.png"],
             padding: false,
             h_space: 0,
             unit_sc: 'tem_du.png',
@@ -512,7 +512,7 @@ export default {
         high: {
             x: 326,
             y: 88,
-            font_array: ["tem_0.png","tem_1.png","tem_2.png","tem_3.png","tem_4.png","tem_5.png","tem_6.png","tem_7.png","tem_8.png","tem_9.png"],
+            font_array: ["tem_0.png", "tem_1.png", "tem_2.png", "tem_3.png", "tem_4.png", "tem_5.png", "tem_6.png", "tem_7.png", "tem_8.png", "tem_9.png"],
             padding: false,
             h_space: 0,
             unit_sc: 'tem_du.png',
@@ -572,24 +572,24 @@ export default {
         week: {
             x: 183,
             y: 60,
-            week_en: ["week_1.png","week_2.png","week_3.png","week_4.png","week_5.png","week_6.png","week_7.png"],
-            week_tc: ["week_1.png","week_2.png","week_3.png","week_4.png","week_5.png","week_6.png","week_7.png"],
-            week_sc: ["week_1.png","week_2.png","week_3.png","week_4.png","week_5.png","week_6.png","week_7.png"],
+            week_en: ["week_1.png", "week_2.png", "week_3.png", "week_4.png", "week_5.png", "week_6.png", "week_7.png"],
+            week_tc: ["week_1.png", "week_2.png", "week_3.png", "week_4.png", "week_5.png", "week_6.png", "week_7.png"],
+            week_sc: ["week_1.png", "week_2.png", "week_3.png", "week_4.png", "week_5.png", "week_6.png", "week_7.png"],
         },
         month: {
             month_startX: 183,
             month_startY: 85,
-            month_sc_array: ["month_1.png","month_2.png","month_3.png","month_4.png","month_5.png","month_6.png","month_7.png","month_8.png","month_9.png","month_10.png","month_11.png","month_12.png"],
-            month_tc_array: ["month_1.png","month_2.png","month_3.png","month_4.png","month_5.png","month_6.png","month_7.png","month_8.png","month_9.png","month_10.png","month_11.png","month_12.png"],
-            month_en_array: ["month_1.png","month_2.png","month_3.png","month_4.png","month_5.png","month_6.png","month_7.png","month_8.png","month_9.png","month_10.png","month_11.png","month_12.png"],
-            month_is_character: true ,
+            month_sc_array: ["month_1.png", "month_2.png", "month_3.png", "month_4.png", "month_5.png", "month_6.png", "month_7.png", "month_8.png", "month_9.png", "month_10.png", "month_11.png", "month_12.png"],
+            month_tc_array: ["month_1.png", "month_2.png", "month_3.png", "month_4.png", "month_5.png", "month_6.png", "month_7.png", "month_8.png", "month_9.png", "month_10.png", "month_11.png", "month_12.png"],
+            month_en_array: ["month_1.png", "month_2.png", "month_3.png", "month_4.png", "month_5.png", "month_6.png", "month_7.png", "month_8.png", "month_9.png", "month_10.png", "month_11.png", "month_12.png"],
+            month_is_character: true,
         },
         day: {
             day_startX: 111,
             day_startY: 62,
-            day_sc_array: ["date_0.png","date_1.png","date_2.png","date_3.png","date_4.png","date_5.png","date_6.png","date_7.png","date_8.png","date_9.png"],
-            day_tc_array: ["date_0.png","date_1.png","date_2.png","date_3.png","date_4.png","date_5.png","date_6.png","date_7.png","date_8.png","date_9.png"],
-            day_en_array: ["date_0.png","date_1.png","date_2.png","date_3.png","date_4.png","date_5.png","date_6.png","date_7.png","date_8.png","date_9.png"],
+            day_sc_array: ["date_0.png", "date_1.png", "date_2.png", "date_3.png", "date_4.png", "date_5.png", "date_6.png", "date_7.png", "date_8.png", "date_9.png"],
+            day_tc_array: ["date_0.png", "date_1.png", "date_2.png", "date_3.png", "date_4.png", "date_5.png", "date_6.png", "date_7.png", "date_8.png", "date_9.png"],
+            day_en_array: ["date_0.png", "date_1.png", "date_2.png", "date_3.png", "date_4.png", "date_5.png", "date_6.png", "date_7.png", "date_8.png", "date_9.png"],
             day_zero: 1,
             day_space: 4,
             day_align: hmUI.align.LEFT,
@@ -598,7 +598,7 @@ export default {
         clock: {
             hour_startX: 32,
             hour_startY: 134,
-            hour_array: ["hour_0.png","hour_1.png","hour_2.png","hour_3.png","hour_4.png","hour_5.png","hour_6.png","hour_7.png","hour_8.png","hour_9.png"],
+            hour_array: ["hour_0.png", "hour_1.png", "hour_2.png", "hour_3.png", "hour_4.png", "hour_5.png", "hour_6.png", "hour_7.png", "hour_8.png", "hour_9.png"],
             hour_zero: 1,
             hour_space: 0,
             hour_angle: 0,
@@ -609,7 +609,7 @@ export default {
 
             minute_startX: 223,
             minute_startY: 134,
-            minute_array: ["hour_0.png","hour_1.png","hour_2.png","hour_3.png","hour_4.png","hour_5.png","hour_6.png","hour_7.png","hour_8.png","hour_9.png"],
+            minute_array: ["hour_0.png", "hour_1.png", "hour_2.png", "hour_3.png", "hour_4.png", "hour_5.png", "hour_6.png", "hour_7.png", "hour_8.png", "hour_9.png"],
             minute_zero: 1,
             minute_space: 0,
             minute_angle: 0,
@@ -618,7 +618,7 @@ export default {
 
             second_startX: 374,
             second_startY: 134,
-            second_array: ["sec_0.png","sec_1.png","sec_2.png","sec_3.png","sec_4.png","sec_5.png","sec_6.png","sec_7.png","sec_8.png","sec_9.png"],
+            second_array: ["sec_0.png", "sec_1.png", "sec_2.png", "sec_3.png", "sec_4.png", "sec_5.png", "sec_6.png", "sec_7.png", "sec_8.png", "sec_9.png"],
             second_zero: 1,
             second_space: 2,
             second_angle: 0,
@@ -629,13 +629,6 @@ export default {
 
     // Тап-зоны
     tap: {
-        cal: {
-            x: 256,
-            y: 360,
-            w: 134,
-            h: 70,
-            type: hmUI.data_type.CAL,
-        },
         battery: {
             x: 154,
             y: 431,
@@ -644,22 +637,18 @@ export default {
             type: hmUI.data_type.BATTERY,
         },
         alarm: {
-          x: 218,
-          y: 7,
-          w: 44,
-          h: 44,
-          type: hmUI.data_type.ALARM_CLOCK,
+            x: 218,
+            y: 10,
+            w: 44,
+            h: 44,
+            type: hmUI.data_type.ALARM_CLOCK,
         },
         weather: {
             x: 268,
             y: 37,
             w: 182,
             h: 88,
-            text: '',
-            color: 0xFFFF8C00,
-            text_size: 25,
-            press_src: 'empty.png',
-            normal_src: 'empty.png',
+            type: hmUI.data_type.WEATHER_CURRENT,
         },
         calendar: {
             x: 28,
@@ -672,6 +661,33 @@ export default {
             press_src: 'empty.png',
             normal_src: 'empty.png',
         },
+        
+        heart: {
+            x: 0,
+            y: 240,
+            w: 210,
+            h: 43,
+            type: hmUI.data_type.HEART,
+        },
+        altitude: {
+            x: 0,
+            y: 240,
+            w: 210,
+            h: 43,
+            type: hmUI.data_type.ALTITUDE,
+        },
+        altimeter: {
+            x: 0,
+            y: 240,
+            w: 210,
+            h: 43,
+            text: '',
+            color: 0xFFFF8C00,
+            text_size: 25,
+            press_src: 'empty.png',
+            normal_src: 'empty.png',
+        },
+
         astronomy_1: {
             x: 244,
             y: 240,
@@ -698,12 +714,19 @@ export default {
             x: 88,
             y: 360,
             w: 134,
-            h: 70,
+            h: 65,
             text: '',
             color: 0xFFFF8C00,
             text_size: 25,
             press_src: 'empty.png',
             normal_src: 'empty.png',
+        },
+        step: {
+            x: 258,
+            y: 360,
+            w: 134,
+            h: 65,
+            type: hmUI.data_type.STEP,
         },
         chart: {
             x: 40,
@@ -726,8 +749,6 @@ export default {
             text_size: 25,
             press_src: 'empty.png',
             normal_src: 'empty.png',
-            /*normal_color: 0xff0000,
-            press_color: 0xff0000,*/
         }
-    },    
+    },
 }

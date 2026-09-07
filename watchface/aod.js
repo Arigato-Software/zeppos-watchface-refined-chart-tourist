@@ -127,7 +127,8 @@ export default class AODScene {
 
         if (!this.energySaving) {
             // Сохранение показаний барометра и высотомера
-            this.barometer2 = new Barometer2();
+            const pressureMode = this.config.getItem('pressureMode', 1);
+            this.barometer2 = new Barometer2({pressureMode});
             this.updateBarometer();
 
             // Отслеживание тревоги по чрезмерному пульсу

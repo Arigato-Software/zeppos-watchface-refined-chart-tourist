@@ -123,7 +123,7 @@ export default {
             w: 400,
             h: 0,
             color: 0xb0b0b0,
-            text_size: 34,
+            text_size: 36,
             align_h: hmUI.align.CENTER_H,
             align_v: hmUI.align.TOP,
             text_style: hmUI.text_style.WRAP,

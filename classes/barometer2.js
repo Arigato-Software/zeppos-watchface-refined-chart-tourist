@@ -32,6 +32,7 @@ export class Barometer2 {
       period: PERIOD.ONE_DAY,
       newDay_func: null,
       show_func: null,
+      pressureMode: 1,
       ...params
     };
 
@@ -42,14 +43,13 @@ export class Barometer2 {
       this._line760_h = this._params.line760_widget.getProperty(hmUI.prop.H);
     }
 
-    // !!! ОТЛАДКА: имитация пропуска 5 дней !!!
-    /*const debugDay = new Date(Date.now() - 5 * MS_PER_DAY).setHours(0, 0, 0, 0);
-    hmFS.writeFileSync({
-      path: CURRENTDAY_FILENAME,
-      data: debugDay.toString(),
-      options: { encoding: 'utf8' },
-    });*/
-    // !!! КОНЕЦ ОТЛАДКИ !!!
+    // Создание сенсора
+    this._sensor = new hmSensor.Barometer();
+    this._started = false;
+    this._changeHandler = () => this.update();
+
+    // Запоминаем последнюю известную высоту для расчета линии нормы
+    this._oldAlt = Number(this._sensor.getAltitude()) || 0;
 
     this._mode = MODE.NONE;
     this._loadCurrentDay();
@@ -61,26 +61,6 @@ export class Barometer2 {
     if (this._params.period === PERIOD.FOUR_DAYS) {
       this.reload_4();
     }
-
-    // !!! ОТЛАДКА: вывод данных по давлению !!!
-    /*console.log('Bar Data:');
-    for (let i = 100; i < this._barData.data.length; i++){
-      const val = this._barData.data[i];
-      if (val !== undefined){
-        const totalSec = i * 216;
-        const hours = Math.floor(totalSec / 3600);
-        const minutes = Math.floor((totalSec % 3600) / 60);
-        const hh = String(hours).padStart(2, '0');
-        const mm = String(minutes).padStart(2, '0');
-        console.log(`${i}[${hh}:${mm}]: ${val}`);
-      }
-    }*/
-    // !!! КОНЕЦ ОТЛАДКИ !!!
-
-    // Создание сенсора
-    this._sensor = new hmSensor.Barometer();
-    this._started = false;
-    this._changeHandler = () => this.update();
 
   }
 
@@ -125,13 +105,73 @@ export class Barometer2 {
     return { max, min };
   }
 
+  // Пересчет исторических данных при смене режима давления
+  recalculatePressureData(oldMode, newMode) {
+    if (oldMode === newMode) return;
+
+    this.reload_4();
+
+    // Вспомогательная функция: поиск ближайшей существующей точки высоты
+    const getNearestAlt = (idx, altArray) => {
+      // Если точка существует по тому же индексу, используем её
+      if (altArray[idx] !== undefined) return altArray[idx];
+
+      // Иначе ищем ближайшую определенную точку влево и вправо
+      let left = idx - 1;
+      let right = idx + 1;
+      const len = altArray.length;
+
+      while (left >= 0 || right < len) {
+        if (right < len && altArray[right] !== undefined) return altArray[right];
+        if (left >= 0 && altArray[left] !== undefined) return altArray[left];
+        left--;
+        right++;
+      }
+
+      // Fallback на случай полного отсутствия данных о высоте (крайне маловероятно)
+      return 0;
+    };
+
+    // Вспомогательная функция для обработки пары массивов
+    const processArrays = (barArray, altArray) => {
+      for (let i = 0; i < barArray.length; i++) {
+        const p = barArray[i];
+        if (p === undefined) continue;
+
+        // Получаем корректную высоту для данной точки давления
+        const alt = getNearestAlt(i, altArray);
+
+        const mmHg = p / 10;
+        let newP = mmHg;
+
+        if (oldMode === 0 && newMode === 1) {
+          // Было абсолютное, стало приведенное
+          newP = this._mmHg2SLP(mmHg, alt);
+        } else if (oldMode === 1 && newMode === 0) {
+          // Было приведенное, стало абсолютное
+          newP = this._slp2mmHg(mmHg, alt);
+        }
+
+        barArray[i] = Math.round(newP * 10);
+      }
+    };
+
+    // Пересчет и сохранение данных за текущий день
+    processArrays(this._barData.data, this._altData.data);
+    this._saveData(PRESSURE_FILENAME, this._barData.data);
+
+    // Пересчет и сохранение данных архива (4 дня)
+    processArrays(this._barData_4.data, this._altData_4.data);
+    this._saveData(PRESSURE_4_FILENAME, this._barData_4.data);
+  }
+
   // Перезагрузка суточные данных из файла
   reload() {
     this._altData.noChange = true;
     this._barData.noChange = true;
     this._altData = this._load(ALTITUDE_FILENAME, this._altData);
     this._barData = this._load(PRESSURE_FILENAME, this._barData);
-    if (this._altData.data.length !== this._barData.data.length) { // файлы не совпали по размеру
+    if (this._altData.data.length !== this._barData.data.length) { // последние точки не совпали
       this._clear();
     }
     // Если отображаем 4 дня — архив визуально изменился
@@ -147,7 +187,7 @@ export class Barometer2 {
     if (this._isLoaded_4) return;
     this._altData_4 = this._load(ALTITUDE_4_FILENAME, this._altData_4);
     this._barData_4 = this._load(PRESSURE_4_FILENAME, this._barData_4);
-    if (this._altData_4.data.length !== this._barData_4.data.length) { // файлы не совпали по размеру
+    if (this._altData_4.data.length !== this._barData_4.data.length) { // последние точки не совпали
       this._clear_4();
     }
     this._isLoaded_4 = true;
@@ -265,6 +305,7 @@ export class Barometer2 {
     const hPa = this._sensor.getAirPressure();
 
     if (alt !== undefined && hPa !== undefined) { // датчик исправен
+      this._oldAlt = alt;
 
       if (this._process(alt, hPa)) {
         show = true; // были изменения в данных
@@ -294,11 +335,24 @@ export class Barometer2 {
     this._currentDay = this._currentDay ? Number(this._currentDay) : -1;
   }
 
-  // Координата y линии нормального давления 760
+  // Координата y линии нормального давления
   _getPressure760Y(max, min) {
     const range = max - min;
     if (range <= 0) return -1;
-    const y = Math.round((max - 7600) * (CHAR_HEIGHT - 1) / range) + 1; // почему +1 я не знаю, но без него не попадало в середину графика
+
+    let targetMmHg10;
+
+    if (this._params.pressureMode === 1) {
+      // Приведенное к уровню моря: фиксированная норма
+      targetMmHg10 = 7600;
+    } else {
+      // Абсолютное: вычисляем норму для текущей высоты через обратную функцию
+      const normalMmHg = this._slp2mmHg(760, this._oldAlt);
+      targetMmHg10 = Math.round(normalMmHg * 10);
+    }
+
+    const y = Math.round((max - targetMmHg10) * (CHAR_HEIGHT - 1) / range) + 1; // почему +1 я не знаю, но без него не попадало в середину графика
+
     return (y >= 0 && y < CHAR_HEIGHT) ? y : -1;
   }
 
@@ -356,7 +410,7 @@ export class Barometer2 {
 
     if (lastX != x || newDay) { // новая запись данных
       const mmHg = this._hPa2mmHg(hPa);
-      const slp = this._mmHg2SLP(mmHg, alt);
+      const slp = this._params.pressureMode === 1 ? this._mmHg2SLP(mmHg, alt) : mmHg;
 
       if (newDay) {
         this._newDay(x, alt, slp);
@@ -757,11 +811,22 @@ export class Barometer2 {
     return hPa * 0.75006;
   }
 
-  // Приведение атмосферного давления к уровню моря
-  _mmHg2SLP(mmHg, alt) {
+  // Коэффициент приведения давления для заданной высоты
+  _getPressureFactor(alt) {
     const t0 = 288.15;
     const t = t0 - 0.0065 * alt;
-    return mmHg * Math.pow(t0 / t, 5.255);
+    return Math.pow(t0 / t, 5.255);
+  }
+
+  // Приведение атмосферного давления к уровню моря
+  _mmHg2SLP(mmHg, alt) {
+    return mmHg * this._getPressureFactor(alt);
+  }
+
+  // Обратное приведение: вычисление абсолютного давления на заданной высоте, 
+  // соответствующего заданному давлению на уровне моря (SLP)
+  _slp2mmHg(slp, alt) {
+    return slp / this._getPressureFactor(alt);
   }
 
   // Получить номар записи (0-399) по времени
@@ -794,8 +859,9 @@ export class Barometer2 {
     hmFS.closeSync(fd);
 
     const len = Math.min(size, count);
-    if (len % 4 !== 0) {
-      return current; // файл поврежден
+
+    if (len === 0 || len % 4 !== 0) {
+      return current; // файл поврежден или пустой
     }
 
     // Запись данных в массив
@@ -869,10 +935,16 @@ export class Barometer2 {
       prepare: [],
       prepared: false,
     };
+
+    // Базовое значение для центра графика давления
+    const baseMmHg10 = this._params.pressureMode === 1
+      ? 7600
+      : Math.round(this._slp2mmHg(760, this._oldAlt) * 10);
+
     this._barData = {
       data: [],
-      max: 7600 + CHART_DIFF,
-      min: 7600 - CHART_DIFF,
+      max: baseMmHg10 + CHART_DIFF,
+      min: baseMmHg10 - CHART_DIFF,
       range: undefined,
       mtime: -1,
       size: -1,

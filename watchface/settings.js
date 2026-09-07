@@ -5,11 +5,12 @@ import { getSystemMode } from '@zos/settings'
 
 import Layout from './settings.layout.js'
 import { Config } from '../classes/config'
+import { Barometer2 } from '../classes/barometer2'
 import { Settings } from '../classes/settings'
 
 export default class SettingsScene {
 
-    constructor(params){
+    constructor(params) {
         console.log('Settings init');
 
         this.page = params;
@@ -20,12 +21,12 @@ export default class SettingsScene {
         this.main = false;
     }
 
-    build(){
+    build() {
         console.log('Settings build');
 
         this.settings.scrollBar();
-        
-        switch (this.page){
+
+        switch (this.page) {
             case 'graphs':
                 this.pageGraphs();
                 break;
@@ -40,6 +41,12 @@ export default class SettingsScene {
                 break;
             case 'target_help':
                 this.pageTargetHelp();
+                break;
+            case 'pressure':
+                this.pagePressure();
+                break;
+            case 'pressure_help':
+                this.pagePressureHelp();
                 break;
             case 'signals':
                 this.pageSignals();
@@ -82,7 +89,7 @@ export default class SettingsScene {
                 break;
             case 'energy_help':
                 this.pageEnergyHelp();
-                break;                
+                break;
             case 'reset':
                 this.pageReset();
                 break;
@@ -93,116 +100,155 @@ export default class SettingsScene {
                 this.pageMain();
                 this.main = true;
         }
-        
+
         this.settings.addFooter();
 
-        if (this.main){
+        if (this.main) {
             this.settings.backButton();
         } else {
             this.settings.homeButton();
         }
     }
 
-    onDestroy(){
+    onDestroy() {
         console.log('Settings destroy');
     }
 
-    pageMain(){
-        this.settings.title({text: 'Настройки циферблата'});
+    pageMain() {
+        this.settings.title({ text: 'Настройки циферблата' });
 
-        const energySaving = this.config.getItem('energySaving', false);
+        this.energySavingHint();
+
         const powerSaving = getSystemMode()['powerSaving'];
 
-        if (energySaving){
-            this.settings.addHint({text: 'Эконом режим: ВКЛ'});
-        }        
+        if (energySaving) {
+            this.settings.addHint({ text: 'Эконом режим: ВКЛ' });
+        }
 
-        if (powerSaving){
+        if (powerSaving) {
             this.settings.addLink({
                 text: 'Эконом режим',
-                click_func: () => {this.settings.openPage('energy')},
+                click_func: () => { this.settings.openPage('energy') },
             });
         }
 
         this.settings.addLink({
             text: 'Графики',
-            click_func: () => {this.settings.openPage('graphs')},
+            click_func: () => { this.settings.openPage('graphs') },
         });
 
         this.settings.addLink({
             text: 'Компас',
-            click_func: () => {this.settings.openPage('compass')},
+            click_func: () => { this.settings.openPage('compass') },
         });
-        
-        if (!powerSaving){
+
+        if (!powerSaving) {
             this.settings.addLink({
                 text: 'Эконом режим',
-                click_func: () => {this.settings.openPage('energy')},
+                click_func: () => { this.settings.openPage('energy') },
             });
         }
 
         this.settings.addLink({
+            text: 'Атм. давление',
+            click_func: () => { this.settings.openPage('pressure') },
+        });
+
+        this.settings.addLink({
             text: 'Сигналы',
-            click_func: () => {this.settings.openPage('signals')},
+            click_func: () => { this.settings.openPage('signals') },
         });
 
         this.settings.addLink({
             text: 'Экран AOD',
-            click_func: () => {this.settings.openPage('aod')},
+            click_func: () => { this.settings.openPage('aod') },
         });
 
         this.settings.addLink({
             text: 'Сброс данных',
-            click_func: () => {this.settings.openPage('reset')},
+            click_func: () => { this.settings.openPage('reset') },
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('about')},
+            click_func: () => { this.settings.openPage('about') },
         });
     }
 
-    pageSignals(){
-        this.settings.title({text: 'Сигналы и оповещения'});
+    pagePressure() {
+        this.settings.title({ text: 'Атм. давление' });
+
+        this.settings.addRadioGroup({
+            items: [
+                'Абсолютное',
+                'Приведенное',
+            ],
+            init: this.config.getItem('pressureMode', 1),
+            click_func: (index) => {
+                const oldMode = this.config.getItem('pressureMode', 1);
+                if (oldMode !== index) {
+                    this.setItem('pressureMode', index);
+                    // Пересчет данных
+                    const barometer2 = new Barometer2();
+                    barometer2.recalculatePressureData(oldMode, index)
+                }
+            },
+        });
+
+        this.settings.addHelpButton({
+            click_func: () => { this.settings.openPage('pressure_help') },
+        });
+    }
+
+    pagePressureHelp() {
+        this.settings.addAbout({
+            title: 'Приведенное атм. давление',
+            text: 'Давление, пересчитанное к уровню моря. ' +
+                'Для корректного отображения необходимо периодически калибровать высоту через приложение "Барометрический высотомер".',
+        });
+    }
+
+    pageSignals() {
+        this.settings.title({ text: 'Сигналы и оповещения' });
 
         this.settings.addLink({
             text: 'Ежечас. сигнал',
-            click_func: () => {this.settings.openPage('hourly')},
+            click_func: () => { this.settings.openPage('hourly') },
         });
 
         this.settings.addLink({
             text: 'Каждый км',
-            click_func: () => {this.settings.openPage('km')},
+            click_func: () => { this.settings.openPage('km') },
         });
 
         this.settings.addLink({
             text: 'Макс. пульс',
-            click_func: () => {this.settings.openPage('alarm')},
+            click_func: () => { this.settings.openPage('alarm') },
         });
 
         this.settings.addLink({
             text: 'Разрыв связи',
-            click_func: () => {this.settings.openPage('connect')},
+            click_func: () => { this.settings.openPage('connect') },
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('signals_help')},
+            click_func: () => { this.settings.openPage('signals_help') },
         });
     }
 
-    pageSignalsHelp(){
+    pageSignalsHelp() {
         this.settings.addAbout({
             title: 'Сигналы и оповещения',
             text: this.getBuzzerHelp(),
         });
     }
 
-    pageGraphs(){
-        this.settings.title({text: 'Графики высоты и атм. давления'});
+    pageGraphs() {
+        this.settings.title({ text: 'Графики высоты и атм. давления' });
 
         const items = [
             'За 4 часа',
             'За сутки',
-            'За 4 дня',                
+            'За 4 дня',
         ]
 
         this.settings.addRadioGroup({
@@ -214,31 +260,31 @@ export default class SettingsScene {
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('graphs_help')},
+            click_func: () => { this.settings.openPage('graphs_help') },
         });
     }
 
-    pageGraphsHelp(){
+    pageGraphsHelp() {
         this.settings.addAbout({
             title: 'Графики высоты и атм. давления',
             text: 'Графики за сутки и за 4 дня строятся по накопленным данным. ' +
-                  'Накопление данных происходит при активном циферблате или на экране AOD.',
+                'Накопление данных происходит при активном циферблате или на экране AOD.',
         });
     }
 
-    pageCompass(){
-        this.settings.title({text: 'Компас'});
+    pageCompass() {
+        this.settings.title({ text: 'Компас' });
 
         let items = [
             'Нет',
-            'Медленный',
-            'Нормальный',
             'Быстрый',
+            'Нормальный',
+            'Медленный',
         ];
 
         const compass = new hmSensor.Compass();
-        if (typeof compass.setFreqMode !== 'function'){
-            items = items.slice(0, 2);
+        if (typeof compass.setFreqMode !== 'function') {
+            items = ['Нет', 'Медленный'];
         }
 
         this.settings.addRadioGroup({
@@ -250,7 +296,7 @@ export default class SettingsScene {
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('compass_help')},
+            click_func: () => { this.settings.openPage('compass_help') },
         });
 
         //this.settings.addIndent();
@@ -259,35 +305,35 @@ export default class SettingsScene {
             items: ['Маркер азимута'],
             init: [this.config.getItem('targetEnabled', false)],
             click_func: (index, checked) => {
-                if (index === 0){
+                if (index === 0) {
                     this.setItem('targetEnabled', checked);
                 }
             },
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('target_help')},
+            click_func: () => { this.settings.openPage('target_help') },
         });
     }
 
-    pageCompassHelp(){
+    pageCompassHelp() {
         this.settings.addAbout({
             title: 'Компас',
             text: 'Компас расходует дополнительную энергию. ' +
-                  'Включайте его по мере необходимости.',
+                'Включайте его по мере необходимости.',
         });
     }
 
-    pageTargetHelp(){
+    pageTargetHelp() {
         this.settings.addAbout({
             title: 'Маркер азимута',
             text: 'Красная точка на шкале компаса, указывающая заданное направление. ' +
-                  'Повернитесь в нужную сторону, совместив направление с 12 часами, и нажмите на маркер.',
+                'Повернитесь в нужную сторону, совместив направление с 12 часами, и нажмите на маркер.',
         });
     }
 
-    pageHourly(){
-        this.settings.title({text: 'Ежечасный сигнал'});
+    pageHourly() {
+        this.settings.title({ text: 'Ежечасный сигнал' });
 
         this.AODHint();
 
@@ -301,7 +347,7 @@ export default class SettingsScene {
             items,
             init,
             click_func: (index, checked) => {
-                switch (index){
+                switch (index) {
                     case 0:
                         this.setItem('hourlyVibra', checked);
                         break;
@@ -318,27 +364,27 @@ export default class SettingsScene {
             items: ['Ночью выкл'],
             init: [this.config.getItem('hourlyNightOff', false)],
             click_func: (index, checked) => {
-                if (index === 0){
+                if (index === 0) {
                     this.setItem('hourlyNightOff', checked);
                 }
             },
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('hourly_night_help')},
+            click_func: () => { this.settings.openPage('hourly_night_help') },
         });
     }
 
-    pageHourlyNightHelp(){
+    pageHourlyNightHelp() {
         this.settings.addAbout({
             title: 'Ночью выкл',
             text: 'Выключить ежечасный сигнал в ночное время. ' +
-                  'Ночное время действует с 22:00 до 07:00 включительно.',
+                'Ночное время действует с 22:00 до 07:00 включительно.',
         });
     }
 
-    pageKm(){
-        this.settings.title({text: 'Каждый километр'});
+    pageKm() {
+        this.settings.title({ text: 'Каждый километр' });
 
         const items = this.alarmItems();
         const init = [
@@ -350,7 +396,7 @@ export default class SettingsScene {
             items,
             init,
             click_func: (index, checked) => {
-                switch (index){
+                switch (index) {
                     case 0:
                         this.setItem('kmVibra', checked);
                         break;
@@ -365,27 +411,27 @@ export default class SettingsScene {
             items: ['Марш'],
             init: [this.config.getItem('kmMelody', false)],
             click_func: (index, checked) => {
-                if (index === 0){
+                if (index === 0) {
                     this.setItem('kmMelody', checked);
                 }
             },
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('km_help')},
+            click_func: () => { this.settings.openPage('km_help') },
         });
     }
 
-    pageKmHelp(){
+    pageKmHelp() {
         this.settings.addAbout({
             title: 'Каждый километр',
             text: 'Сигнал срабатывает на каждый километр пути. ' +
-                  'Марш не проигрывается на экране AOD.',
+                'Марш не проигрывается на экране AOD.',
         });
     }
 
-    pageAlarm(){
-        this.settings.title({text: 'Максимальный пульс'});
+    pageAlarm() {
+        this.settings.title({ text: 'Максимальный пульс' });
 
         this.AODHint();
 
@@ -399,7 +445,7 @@ export default class SettingsScene {
             items,
             init,
             click_func: (index, checked) => {
-                switch (index){
+                switch (index) {
                     case 0:
                         this.setItem('pulseVibra', checked);
                         break;
@@ -411,19 +457,19 @@ export default class SettingsScene {
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('alarm_help')},
+            click_func: () => { this.settings.openPage('alarm_help') },
         });
     }
 
-    pageAlarmHelp(){
+    pageAlarmHelp() {
         this.settings.addAbout({
             title: 'Максимальный пульс',
             text: 'Сигнал тревоги подаётся при превышении значения максимального пульса.',
         });
     }
 
-    pageConnect(){
-        this.settings.title({text: 'Разрыв связи'});
+    pageConnect() {
+        this.settings.title({ text: 'Разрыв связи' });
 
         this.AODHint();
 
@@ -437,7 +483,7 @@ export default class SettingsScene {
             items,
             init,
             click_func: (index, checked) => {
-                switch (index){
+                switch (index) {
                     case 0:
                         this.setItem('connectVibra', checked);
                         break;
@@ -449,19 +495,19 @@ export default class SettingsScene {
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('connect_help')},
+            click_func: () => { this.settings.openPage('connect_help') },
         });
     }
 
-    pageConnectHelp(){
+    pageConnectHelp() {
         this.settings.addAbout({
             title: 'Разрыв связи',
             text: 'Сигнал при потере или восстановлении связи с телефоном.',
         });
     }
 
-    pageAOD(){
-        this.settings.title({text: 'Экран AOD'});
+    pageAOD() {
+        this.settings.title({ text: 'Экран AOD' });
 
         this.AODHint();
 
@@ -478,20 +524,20 @@ export default class SettingsScene {
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('aod_help')},
+            click_func: () => { this.settings.openPage('aod_help') },
         });
     }
 
-    pageAODHelp(){
+    pageAODHelp() {
         this.settings.addAbout({
             title: 'Экран AOD',
             text: 'Для повышения точности графиков накопление данных о высоте и атм. давлении продолжается на экране AOD. ' +
-                  'Чёрный экран AOD позволяет экономить заряд аккумулятора без прекращения сбора данных.',
+                'Чёрный экран AOD позволяет экономить заряд аккумулятора без прекращения сбора данных.',
         });
     }
 
-    pageEnergy(){
-        this.settings.title({text: 'Экономия энергии'});
+    pageEnergy() {
+        this.settings.title({ text: 'Экономия энергии' });
 
         this.settings.addCheckboxGroup({
             items: [
@@ -503,7 +549,7 @@ export default class SettingsScene {
                 this.config.getItem('leaveSignals', false),
             ],
             click_func: (index, checked) => {
-                switch (index){
+                switch (index) {
                     case 0:
                         this.setItem('energySaving', checked);
                         break;
@@ -515,20 +561,20 @@ export default class SettingsScene {
         });
 
         this.settings.addHelpButton({
-            click_func: () => {this.settings.openPage('energy_help')},
+            click_func: () => { this.settings.openPage('energy_help') },
         });
     }
 
-    pageEnergyHelp(){
+    pageEnergyHelp() {
         this.settings.addAbout({
             title: 'Энергосбережение',
             text: 'В режиме экономии энергии некоторые элементы отсутствуют или заменены на более простые. ' +
-                  'Накопление данных о высоте и атм. давлении не ведётся. ' +
-                  'Можно оставить сигналы, кроме сигнала максимального пульса.',
+                'Накопление данных о высоте и атм. давлении не ведётся. ' +
+                'Можно оставить сигналы, кроме сигнала максимального пульса.',
         });
     }
 
-    pageReset(){
+    pageReset() {
         const files = [
             'altitude.dat',
             'pressure.dat',
@@ -547,7 +593,7 @@ export default class SettingsScene {
         });
     }
 
-    pageAbout(){
+    pageAbout() {
         const packageInfo = getPackageInfo()
         const name = packageInfo.name ?? '--';
         const version = packageInfo.version ?? '0.0.0';
@@ -556,36 +602,43 @@ export default class SettingsScene {
         this.settings.addAbout({
             title: 'О циферблате',
             text: `Циферблат ${name} разработан для туристов и альпинистов. ` +
-                  'За основу взят встроенный циферблат Refined Chart от Zepp Health.\n\n' +
-                  `Версия: ${version}\n` +
-                  `Разработчик: ${vender}, 2026.`,
+                'За основу взят встроенный циферблат Refined Chart от Zepp Health.\n\n' +
+                `Версия: ${version}\n` +
+                `Разработчик: ${vender}, 2026.`,
         });
     }
 
-    AODHint(){
-        const screen = new hmSensor.Screen();
-        if (!screen.getAodMode()){
-            this.settings.addHint({text: 'Экран AOD: ВЫКЛ'});
+    energySavingHint() {
+        const energySaving = this.config.getItem('energySaving', false);
+        if (energySaving) {
+            this.settings.addHint({ text: 'Эконом режим: ВКЛ' });
         }
     }
 
-    alarmItems(){
+    AODHint() {
+        const screen = new hmSensor.Screen();
+        if (!screen.getAodMode()) {
+            this.settings.addHint({ text: 'Экран AOD: ВЫКЛ' });
+        }
+    }
+
+    alarmItems() {
         const hasBuzzer = hmSensor.checkSensor(hmSensor.Buzzer);
         const items = ['Вибро'];
-        if (hasBuzzer){
+        if (hasBuzzer) {
             items.push('Зуммер');
             const buzzer = new hmSensor.Buzzer();
-            if (!buzzer.isEnabled()){
-                this.settings.addHint({text: 'Сцены с зуммером: ВЫКЛ'});
+            if (!buzzer.isEnabled()) {
+                this.settings.addHint({ text: 'Сцены с зуммером: ВЫКЛ' });
             }
         }
         return items;
     }
 
-    getBuzzerHelp(){
+    getBuzzerHelp() {
         const hasBuzzer = hmSensor.checkSensor(hmSensor.Buzzer);
         let help = 'Для корректной работы функций требуется активный AOD.';
-        if (hasBuzzer){
+        if (hasBuzzer) {
             help += ' Для работы зуммера включите: Настройки - Звук и вибрация - Сцены с зуммером - Другие.';
             help += ' В режиме "Не беспокоить" вибрация и звук не воспроизводятся.';
             help += ' В режиме "Театр" не воспроизводится звук.';
@@ -595,16 +648,16 @@ export default class SettingsScene {
         return help;
     }
 
-    setItem(key, val){
-        if (this.config.getItem(key, null) !== val){
+    setItem(key, val) {
+        if (this.config.getItem(key, null) !== val) {
             this.config.setItem(key, val);
             this.config.save();
         }
     }
 
-    removeFiles(files){
-        for (const file of files){
-            hmFS.rmSync({path: file});
+    removeFiles(files) {
+        for (const file of files) {
+            hmFS.rmSync({ path: file });
         }
     }
 

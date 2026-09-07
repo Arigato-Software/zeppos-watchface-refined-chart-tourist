@@ -39,6 +39,9 @@ export default class WatchFaceScene {
             this.changeCompassHandler = () => this.changeCompass();
 
             this._compassStarted = false;
+
+            // Режим атм. давления: 0 - абсолютное, 1 - приведенное
+            this.pressureMode = this.config.getItem('pressureMode', 1);
         }
 
         if (this.leaveSignals) {
@@ -315,22 +318,23 @@ export default class WatchFaceScene {
             this.barometer = new Barometer({
                 widget: this.chart_text,
                 zone_func: barZoneFunc,
+                pressureMode: this.pressureMode,
             });
 
         }
 
         // Тап-зоны
         const tap = Layout.tap;
-        //this.tap_cal = hmUI.createWidget(hmUI.widget.IMG_CLICK, tap.cal);
         this.tap_bat = hmUI.createWidget(hmUI.widget.IMG_CLICK, tap.battery);
-        this.tap_weather = hmUI.createWidget(hmUI.widget.BUTTON, {
-            ...tap.weather,
-            click_func: () => Router.launchApp({ appId: Router.SYSTEM_APP_WEATHER, native: true }),
-        });
+        this.tap_weather = hmUI.createWidget(hmUI.widget.IMG_CLICK, tap.weather);
         this.tap_calendar = hmUI.createWidget(hmUI.widget.BUTTON, {
             ...tap.calendar,
             click_func: () => Router.launchApp({ appId: Router.SYSTEM_APP_CALENDAR, native: true }),
         });
+
+        // Тап-зона по показателю (пульс, высота, атм. давление)
+        this.tap_heart_alt_pre = null;
+
         this.tap_astronomy_1 = hmUI.createWidget(hmUI.widget.BUTTON, {
             ...tap.astronomy_1,
             click_func: () => this.changeAstronomy(),
@@ -348,6 +352,7 @@ export default class WatchFaceScene {
             click_func: () => this.changeChart(),
         });
         this.tap_alarm = hmUI.createWidget(hmUI.widget.IMG_CLICK, tap.alarm);
+        this.tap_step = hmUI.createWidget(hmUI.widget.IMG_CLICK, tap.step);
 
         if (this.compassMode && this.targetMode) {
             this.tap_target = hmUI.createWidget(hmUI.widget.BUTTON, {
@@ -710,13 +715,16 @@ export default class WatchFaceScene {
         this.compassTarget = this.config.getItem('target', 180);
         this.compass = new hmSensor.Compass();
         if (typeof this.compass.setFreqMode === 'function') {
-            let freq = hmSensor.FREQ_MODE_HIGH;
+            let freq = hmSensor.FREQ_MODE_LOW;
             switch (this.compassMode) {
                 case 1:
-                    freq = hmSensor.FREQ_MODE_LOW;
+                    freq = hmSensor.FREQ_MODE_HIGH; // Быстрый
                     break;
                 case 2:
-                    freq = hmSensor.FREQ_MODE_NORMAL;
+                    freq = hmSensor.FREQ_MODE_NORMAL; // Нормальный
+                    break;
+                case 3:
+                    freq = hmSensor.FREQ_MODE_LOW; // Медленный
                     break;
             }
             this.compass.setFreqMode(freq);
@@ -773,9 +781,10 @@ export default class WatchFaceScene {
     initChart() {
         if (!this.energySaving) {
             // Графики и показания барометра и высотомера
-            let params = {};
+            let params = { pressureMode: this.pressureMode };
             if (this.graphMode > 0) { // графики на сутки или 4 дня
                 params = {
+                    ...params,
                     line760_widget: this.chart_line760,
                     period: this.graphMode == 1 ? PERIOD.ONE_DAY : PERIOD.FOUR_DAYS, // 1 - сутки, 2 - 4 дня
                     newDay_func: this.graphMode == 2 ? () => this.graphTime() : null,
@@ -791,6 +800,7 @@ export default class WatchFaceScene {
         }
 
         this.chart = this.config.getItem('chartMode', this.chart);
+        this.updateMetricTapZone();
         this.displayChart();
     }
 
@@ -888,7 +898,34 @@ export default class WatchFaceScene {
             }
         }
         this.displayChart();
+        this.updateMetricTapZone();
         this.config.setItem('chartMode', this.chart);
+    }
+
+    // Тап-зона по показателю (пульс, высота, атм. давление)
+    updateMetricTapZone() {
+        // Удаляем предыдущую зону, если она существует
+        if (this.tap_heart_alt_pre) {
+            hmUI.deleteWidget(this.tap_heart_alt_pre);
+        }
+
+        // Создаем актуальную зону нажатия
+        switch (this.chart) {
+            case this.CHART.HEART: // Пульс
+                this.tap_heart_alt_pre = hmUI.createWidget(hmUI.widget.IMG_CLICK, Layout.tap.heart);
+                break;
+            case this.CHART.ALT: // Высота
+                this.tap_heart_alt_pre = hmUI.createWidget(hmUI.widget.IMG_CLICK, Layout.tap.altitude);
+                break;
+            case this.CHART.PRE: // Давление
+                this.tap_heart_alt_pre = hmUI.createWidget(hmUI.widget.BUTTON, {
+                    ...Layout.tap.altimeter,
+                    click_func: () => Router.launchApp({ appId: Router.SYSTEM_APP_ALTIMETER, native: true }),
+                });
+                break;
+            default:
+                this.tap_heart_alt_pre = null;
+        }
     }
 
     showChart() {
